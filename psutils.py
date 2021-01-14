@@ -24,13 +24,11 @@ class PsUtils:
             None.
         """
         pids = []
-        for dirname in os.listdir('/proc'):
-            if dirname.isdigit():
-                cmdline = '/proc/{}/cmdline'.format(dirname)
-                if os.path.exists(cmdline):
-                    with open(cmdline) as out:
-                        if name in out.read():
-                            pids.append(int(dirname))
+        for cmdline in glob.glob('/proc/[0-9]*/cmdline'):
+            if os.path.exists(cmdline):
+                with open(cmdline) as out:
+                    if name in out.read():
+                        pids.append(int(cmdline.split('/')[2]))
         return pids
 
     @staticmethod
